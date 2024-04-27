@@ -7,22 +7,24 @@ class CardsColor(Enum):
         "name": "clubs",
         "color": "black",
         "icon": "♣︎"
-    },
+    }
     DIAMONDS = {
         "name": "diamonds",
         "color": "red",
         "icon": "♦︎"
-    },
+    }
     HEARTS = {
         "name": "hearts",
         "color": "red",
         "icon": "♥︎"
-    },
+    }
     SPADES = {
         "name": "spades",
         "color": "black",
         "icon": "♠︎"
     }
+
+# CARD_COLORS = [CardsColor.CLUBS, CardsColor.SPADES, ]
 
 
 class CardsRank(Enum):
@@ -93,9 +95,7 @@ class Card:
                             "CardsColor.sparde: 1, ...} ")
 
     def __str__(self):
-        return str(self.card_color.value[0]['icon']) + " " + self.card_rank.value + ", card value:" + str(
-            self.card_value)
-
+        return str(self.card_color.value['icon']) + " " + self.card_rank.value + ", card value:" + str(self.card_value)
 
 def create_card_deck(card_value_sheet=None):
     deck = []

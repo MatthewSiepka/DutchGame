@@ -1,10 +1,25 @@
 from dutch_core.card import Card, CardsColor, CardsRank, create_card_deck
+from dutch_core.dutch_game_data import DutchGameData
+from dutch_core.dutch_game import get_default_options
 
-deck = create_card_deck()
-print(deck)
-print(deck[0])
+players = [
+    {
+        "name": "test1",
+        "id": 0
+    },
+    {
+        "name": "test2",
+        "id": 1
+    }
+]
 
-card = Card(CardsColor.CLUBS, CardsRank.ACE)
-print(card.card_color)
+print(CardsColor['SPADES'])
 
-print(card.card_value)
+game_data = DutchGameData(get_default_options()["card_values"], players)
+
+
+for i in range(4):
+    for player in players:
+        game_data.add_player_card(player["name"], game_data.take_card_from_stack())
+
+game_data.print_game_data()
