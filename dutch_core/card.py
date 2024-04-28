@@ -24,6 +24,7 @@ class CardsColor(Enum):
         "icon": "♠︎"
     }
 
+
 # CARD_COLORS = [CardsColor.CLUBS, CardsColor.SPADES, ]
 
 
@@ -41,6 +42,7 @@ class CardsRank(Enum):
     JACK = "J"
     QUEEN = "Q"
     KING = "K"
+
 
 # Cards Values Can Be Set for All cards Colors by setting it to int or separate for each Color eg.:
 # CardsRank.ACE: 1,
@@ -76,7 +78,7 @@ class Card:
     card_value = None
     card_value_sheet = None
 
-    def __init__(self, card_color, card_rank, card_value_sheet=None):
+    def __init__(self, card_color: CardsColor, card_rank: CardsRank, card_value_sheet: {} = None):
         if card_value_sheet is None:
             card_value_sheet = DEFAULT_CARD_VALUES
         self.card_color = card_color
@@ -97,7 +99,8 @@ class Card:
     def __str__(self):
         return str(self.card_color.value['icon']) + " " + self.card_rank.value + ", card value:" + str(self.card_value)
 
-def create_card_deck(card_value_sheet=None):
+
+def create_card_deck(card_value_sheet: dict | None = None) -> list[Card]:
     deck = []
     for color in CardsColor:
         for rank in CardsRank:
@@ -105,5 +108,5 @@ def create_card_deck(card_value_sheet=None):
     return deck
 
 
-def shuffle_cards(cards):
+def shuffle_cards(cards: list[Card]):
     random.shuffle(cards)

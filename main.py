@@ -1,6 +1,6 @@
 from dutch_core.card import Card, CardsColor, CardsRank, create_card_deck
 from dutch_core.dutch_game_data import DutchGameData
-from dutch_core.dutch_game import get_default_options
+from dutch_core.dutch_game import get_default_options, DutchGame
 
 players = [
     {
@@ -23,3 +23,7 @@ for i in range(4):
         game_data.add_player_card(player["name"], game_data.take_card_from_stack())
 
 game_data.print_game_data()
+
+print(game_data.check_players_card("test1", 1))
+
+DutchGame()
