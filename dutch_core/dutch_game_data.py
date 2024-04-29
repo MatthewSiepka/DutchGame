@@ -1,4 +1,5 @@
-from dutch_core.card import CardsRank, CardsColor, shuffle_cards, create_card_deck, Card
+from dutch_core.card.card import shuffle_cards, create_card_deck, Card
+from dutch_core.exceptins import IllegalMove
 
 """
 player_data = [
@@ -42,6 +43,8 @@ class DutchGameData:
         self.used_stack.append(card)
 
     def check_players_card(self, player_name: str, card_index: int):
+        if card_index > len(self.players_cards[player_name]):
+            raise IllegalMove(player_name, "Card with index: " + str(card_index) + " is out of Range")
         return self.players_cards[player_name][card_index]
 
     def replace_players_card(self, player_name: str, card: Card, card_index: int) -> Card:
@@ -65,3 +68,9 @@ class DutchGameData:
             print("Player:", player_name, "cards:")
             for card in self.players_cards[player_name]:
                 print(card, sep="; ")
+
+    def look_at_card_on_used_stack(self) -> Card | None:
+        return self.used_stack[len(self.used_stack) - 1] if len(self.used_stack) > 1 else None
+
+    def get_players_card_count(self, name):
+        return len(self.players_cards[name])

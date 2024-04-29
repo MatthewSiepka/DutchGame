@@ -1,5 +1,5 @@
 import random
-from enum import Enum, auto
+from enum import Enum
 
 
 class CardsColor(Enum):
@@ -25,9 +25,6 @@ class CardsColor(Enum):
     }
 
 
-# CARD_COLORS = [CardsColor.CLUBS, CardsColor.SPADES, ]
-
-
 class CardsRank(Enum):
     ACE = "A"
     TWO = "2"
@@ -42,17 +39,6 @@ class CardsRank(Enum):
     JACK = "J"
     QUEEN = "Q"
     KING = "K"
-
-
-# Cards Values Can Be Set for All cards Colors by setting it to int or separate for each Color eg.:
-# CardsRank.ACE: 1,
-# or
-# CardsRank.ACE: {
-#   CardColor.Clubs: 1,
-#   CardColor.Hearts: 2,
-#   CardColor.Diamonds: 3,
-#   CardColor.Spades: 4,
-# }
 
 
 DEFAULT_CARD_VALUES = {
