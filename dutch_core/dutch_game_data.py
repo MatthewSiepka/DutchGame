@@ -45,7 +45,8 @@ class DutchGameData:
     def check_players_card(self, player_name: str, card_index: int):
         if card_index > len(self.players_cards[player_name]):
             raise IllegalMove(player_name, "Card with index: " + str(card_index) + " is out of Range")
-        return self.players_cards[player_name][card_index]
+        card = self.players_cards[player_name][card_index]
+        return card
 
     def replace_players_card(self, player_name: str, card: Card, card_index: int) -> Card:
         temp = self.players_cards[player_name][card_index]
@@ -70,7 +71,10 @@ class DutchGameData:
                 print(card, sep="; ")
 
     def look_at_card_on_used_stack(self) -> Card | None:
-        return self.used_stack[len(self.used_stack) - 1] if len(self.used_stack) > 1 else None
+        return self.used_stack[len(self.used_stack) - 1] if len(self.used_stack) > 0 else None
 
-    def get_players_card_count(self, name):
+    def get_players_card_count(self, name: str):
         return len(self.players_cards[name])
+
+    def remove_players_card(self, name: str, card: int):
+        self.players_cards[name].pop(card)

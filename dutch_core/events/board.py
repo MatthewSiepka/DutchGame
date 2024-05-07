@@ -9,5 +9,5 @@ class Board:
     card_on_used_stack: Card
     players: list[PlayerInfo]
     player_cards: int
-    player_turn: str
+    player_turn: str | None
     moves_possible: list[PlayerMove]

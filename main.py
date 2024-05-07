@@ -1,9 +1,17 @@
+from dutch_core.player_interface import PlayerInterface
 from dutch_core.player_move import PlayerMove
 from dutch_core.dutch_game import DutchGame
+from dutch_core.events.player_event import PlayerEvent, DetailsCardId
+from test_interface.test_ui import TestUI
 
 game = DutchGame()
-game.add_player("test", lambda a: print(a))
-game.add_player("test2", lambda a: print(a))
+player_one = PlayerInterface("test1", game)
+player_two = PlayerInterface("test2", game)
+players = [player_one, player_two]
+
+ui = TestUI(game, players)
 game.start_game()
 
-print(game.get_boards_for_players())
+while(True):
+    userInput = input("PlayerName;Move;Details")
+    ui.move_handler(userInput)

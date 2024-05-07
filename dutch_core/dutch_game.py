@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+import threading
 from dutch_core.events.board import Board
 from dutch_core.events.player_event import PlayerEvent, DetailsCardId, DetailsOtherPlayerCard, DetailsForRearranging
 from dutch_core.events.player_info import PlayerInfo
@@ -29,6 +29,7 @@ class DutchGame:
     game_data: DutchGameData
     player_won: None | str = None
     card_selected: Card | None = None
+    lock = threading.Lock()
 
     def __init__(self, options=None):
         if options is None:
@@ -100,19 +101,21 @@ class DutchGame:
             jump_in_details: None | Card = None,
             message: None | str = None
     ):
+        # print(details_for_player)
         if status == Status.FAIL:
-            response = PlayerEventResponse(status, game_change, player_event, None, None, None, self.player_won, message)
+            response = PlayerEventResponse(status, game_change, player_event, None, None, None, self.player_won,
+                                           message)
             self.players[player_event.player].event_listener(response)
             return
         player_board = self.get_boards_for_players()
         for index, player in enumerate(self.players_order):
             change_on_board = player_board[index]
-            details_for_player = details_for_player if player_event is None or player.name == player_event.player else None
+            details = details_for_player if player_event is None or player.name == player_event.player else None
             response = PlayerEventResponse(
                 status,
                 game_change,
                 player_event,
-                details_for_player,
+                details,
                 change_on_board,
                 jump_in_details,
                 self.player_won,
@@ -128,10 +131,11 @@ class DutchGame:
                                          type(DetailsForRearranging)
                                          ):
         if not isinstance(player_event.details, type_of_detail):
-            raise IllegalMove(player_event.player, "Details are not type of DetailsCardId")
+            raise IllegalMove(player_event.player,
+                              "Details are not type of " + str(type(player_event.details)) + " " + str(type_of_detail))
 
     def check_if_player_exists(self, player_event: PlayerEvent, player_name: str):
-        if not player_name in self.players:
+        if player_name not in self.players:
             raise IllegalMove(player_event, "Player with name: " + player_name + " does not exists")
 
     def look_at_own_cards(self, player_event: PlayerEvent):
@@ -150,6 +154,9 @@ class DutchGame:
 
     def set_up_next_players_turn(self):
         self.next_player_turn()
+        # if self.dutch is not None and self.dutch == self.player_turn:
+        #     self.send_event_to_players(None, GameChange.END_OF_GAME, Status.SUCCESS, )
+        # TODO Check If is End OF Game by dutching
         for index, player in enumerate(self.players_order):
             if index == self.player_turn:
                 player.possible_moves = [
@@ -195,14 +202,24 @@ class DutchGame:
         self.send_event_to_players(player_event)
 
     def jump_in(self, player_event: PlayerEvent):
-        ...
+        self.check_if_type_of_details_is_good(player_event, DetailsCardId)
+        card = self.game_data.check_players_card(player_event.player, player_event.details.card)
+        card_on_stack = self.game_data.look_at_card_on_used_stack()
+        if card.card_value == card_on_stack.card_value:
+            self.game_data.remove_players_card(player_event.player, player_event.details.card)
+            self.put_card_on_used_stack(card)
+            self.send_event_to_players(player_event)
+            # TODO Check if player won
+        else:
+            self.game_data.add_player_card(player_event.player, self.game_data.take_card_from_stack())
+            self.send_event_to_players(player_event, jump_in_details=card)
 
     def take_card_from_stack(self, player_event: PlayerEvent):
         card = self.game_data.take_card_from_stack()
         self.card_selected = card
         player = self.players_order[self.player_turn]
         player.possible_moves = [PlayerMove.REPLACE_CARD_FROM_OWN_DECK, PlayerMove.PUT_CARD_ON_USED_STACK]
-        self.send_event_to_players(player_event)
+        self.send_event_to_players(player_event, details_for_player=card)
 
     def take_card_from_used_stack(self, player_event: PlayerEvent):
         card = self.game_data.take_card_from_used_stack()
@@ -239,7 +256,7 @@ class DutchGame:
     def perform_player_event(self, player_event: PlayerEvent):
         match player_event.move:
             case PlayerMove.LOOK_AT_OWN_CARDS:
-                self.look_at_any_cards(player_event)
+                self.look_at_own_cards(player_event)
             case PlayerMove.LOOK_AT_ANY_CARDS:
                 self.look_at_any_cards(player_event)
             case PlayerMove.REARRANGE_PLACE_OF_CARDS:
@@ -249,7 +266,7 @@ class DutchGame:
             case PlayerMove.JUMP_IN:
                 self.jump_in(player_event)
             case PlayerMove.TAKE_CARD_FROM_STACK:
-                self.take_card_from_used_stack(player_event)
+                self.take_card_from_stack(player_event)
             case PlayerMove.TAKE_CARD_FROM_USED_STACK:
                 self.take_card_from_used_stack(player_event)
             case PlayerMove.REPLACE_CARD_FROM_OWN_DECK:
@@ -258,11 +275,12 @@ class DutchGame:
                 self.put_card_on_used_stack(player_event)
 
     def player_input(self, player_event: PlayerEvent):
-        player_name = player_event.player
-        try:
-            self.check_if_player_exists(player_event, player_name)
-            if player_event.move not in self.players[player_name].possible_moves:
-                raise IllegalMove(player_name, "player can't perform this move")
-            self.perform_player_event(player_event)
-        except IllegalMove as err:
-            self.send_event_to_players(player_event, status=Status.FAIL, message=str(err))
+        with self.lock:
+            player_name = player_event.player
+            try:
+                self.check_if_player_exists(player_event, player_name)
+                if player_event.move not in self.players[player_name].possible_moves:
+                    raise IllegalMove(player_name, "player can't perform this move")
+                self.perform_player_event(player_event)
+            except IllegalMove as err:
+                self.send_event_to_players(player_event, status=Status.FAIL, message=str(err))
