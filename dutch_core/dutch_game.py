@@ -20,6 +20,17 @@ class Player:
     event_listener: lambda e: PlayerEventResponse
 
 
+def check_if_type_of_details_is_good(player_event: PlayerEvent,
+                                     type_of_detail:
+                                     type(DetailsCardId) |
+                                     type(DetailsOtherPlayerCard) |
+                                     type(DetailsForRearranging)
+                                     ):
+    if not isinstance(player_event.details, type_of_detail):
+        raise IllegalMove(player_event.player,
+                          "Details are not type of " + str(type(player_event.details)) + " " + str(type_of_detail))
+
+
 class DutchGame:
     players: dict | None = {}
     players_order: list[Player] = []
@@ -41,13 +52,13 @@ class DutchGame:
         self.players_order.append(name_player)
         self.players[name] = name_player
 
-    def init_game(self):
+    def __init_game(self):
         players_list = []
         for player in self.players_order:
             players_list.append({"name": player.name})
         self.game_data = DutchGameData(self.options.card_values, players_list)
 
-    def deal_cards(self):
+    def __deal_cards(self):
         for i in range(self.options.cards_on_start):
             for player in self.players_order:
                 self.game_data.add_player_card(player.name, self.game_data.take_card_from_stack())
@@ -56,21 +67,21 @@ class DutchGame:
         self.game_data.put_card_on_used_stack(self.game_data.take_card_from_stack())
 
     def start_game(self):
-        self.init_game()
-        self.deal_cards()
-        self.send_event_to_players(None, game_change=GameChange.CARDS_DEALT)
+        self.__init_game()
+        self.__deal_cards()
+        self.__send_event_to_players(None, game_change=GameChange.CARDS_DEALT)
 
-    def remove_player_possible_move(self, player_name: str, move: PlayerMove):
+    def __remove_player_possible_move(self, player_name: str, move: PlayerMove):
         self.players[player_name].possible_moves.remove(move)
 
-    def next_player_turn(self):
+    def __next_player_turn(self):
         if self.player_turn is None or self.player_turn == len(self.players_order) - 1:
             self.player_turn = 0
         else:
             self.player_turn += 1
         return not (self.dutch is not None and self.dutch == self.player_turn)
 
-    def get_boards_for_players(self) -> list[Board]:
+    def __get_boards_for_players(self) -> list[Board]:
         player_boards = []
         players = [
             PlayerInfo(player.name, self.game_data.get_players_card_count(player.name))
@@ -92,7 +103,7 @@ class DutchGame:
             player_boards.append(board)
         return player_boards
 
-    def send_event_to_players(
+    def __send_event_to_players(
             self,
             player_event: PlayerEvent | None,
             game_change: GameChange | None = None,
@@ -107,7 +118,7 @@ class DutchGame:
                                            message)
             self.players[player_event.player].event_listener(response)
             return
-        player_board = self.get_boards_for_players()
+        player_board = self.__get_boards_for_players()
         for index, player in enumerate(self.players_order):
             change_on_board = player_board[index]
             details = details_for_player if player_event is None or player.name == player_event.player else None
@@ -123,38 +134,27 @@ class DutchGame:
             )
             player.event_listener(response)
 
-    def check_if_type_of_details_is_good(self,
-                                         player_event: PlayerEvent,
-                                         type_of_detail:
-                                         type(DetailsCardId) |
-                                         type(DetailsOtherPlayerCard) |
-                                         type(DetailsForRearranging)
-                                         ):
-        if not isinstance(player_event.details, type_of_detail):
-            raise IllegalMove(player_event.player,
-                              "Details are not type of " + str(type(player_event.details)) + " " + str(type_of_detail))
-
-    def check_if_player_exists(self, player_event: PlayerEvent, player_name: str):
+    def __check_if_player_exists(self, player_event: PlayerEvent, player_name: str):
         if player_name not in self.players:
             raise IllegalMove(player_event, "Player with name: " + player_name + " does not exists")
 
-    def look_at_own_cards(self, player_event: PlayerEvent):
-        self.check_if_type_of_details_is_good(player_event, DetailsCardId)
+    def __look_at_own_cards(self, player_event: PlayerEvent):
+        check_if_type_of_details_is_good(player_event, DetailsCardId)
         card = self.game_data.check_players_card(player_event.player, player_event.details.card)
-        self.remove_player_possible_move(player_event.player, PlayerMove.LOOK_AT_OWN_CARDS)
+        self.__remove_player_possible_move(player_event.player, PlayerMove.LOOK_AT_OWN_CARDS)
         is_end_of_looking_faze = True
         for player in self.players_order:
             if not len(player.possible_moves) == 0:
                 is_end_of_looking_faze = False
                 break
         if is_end_of_looking_faze:
-            self.set_up_next_players_turn()
+            self.__set_up_next_players_turn()
 
-        self.send_event_to_players(player_event, details_for_player=card)
+        self.__send_event_to_players(player_event, details_for_player=card)
 
-    def set_up_next_players_turn(self):
-        self.next_player_turn()
-        # if self.dutch is not None and self.dutch == self.player_turn:
+    def __set_up_next_players_turn(self):
+        self.__next_player_turn()
+        # if self.dutch_old is not None and self.dutch_old == self.player_turn:
         #     self.send_event_to_players(None, GameChange.END_OF_GAME, Status.SUCCESS, )
         # TODO Check If is End OF Game by dutching
         for index, player in enumerate(self.players_order):
@@ -168,67 +168,67 @@ class DutchGame:
             else:
                 player.possible_moves = [PlayerMove.JUMP_IN]
 
-    def look_at_any_cards(self, player_event: PlayerEvent):
-        self.check_if_type_of_details_is_good(player_event, DetailsOtherPlayerCard)
+    def __look_at_any_cards(self, player_event: PlayerEvent):
+        check_if_type_of_details_is_good(player_event, DetailsOtherPlayerCard)
         if player_event.details.player not in self.players:
             raise IllegalMove(player_event.player, "Player Does not exists")
         card = self.game_data.check_players_card(player_event.details.player, player_event.details.card)
-        self.set_up_next_players_turn()
-        self.send_event_to_players(player_event, details_for_player=card)
+        self.__set_up_next_players_turn()
+        self.__send_event_to_players(player_event, details_for_player=card)
 
-    def check_if_player_index_exist(self, player_event: PlayerEvent, player_name: str, card_id: int):
+    def __check_if_player_index_exist(self, player_event: PlayerEvent, player_name: str, card_id: int):
         if not card_id >= 0 and self.game_data.get_players_card_count(player_name) < card_id:
             raise IllegalMove(player_event.player, f"Card: {card_id} id is out of Range in {player_name} Deck")
 
-    def rearrange_place_of_cards(self, player_event: PlayerEvent):
-        self.check_if_type_of_details_is_good(player_event, DetailsForRearranging)
-        self.check_if_player_exists(player_event, player_event.details.player_one)
-        self.check_if_player_exists(player_event, player_event.details.player_two)
+    def __rearrange_place_of_cards(self, player_event: PlayerEvent):
+        check_if_type_of_details_is_good(player_event, DetailsForRearranging)
+        self.__check_if_player_exists(player_event, player_event.details.player_one)
+        self.__check_if_player_exists(player_event, player_event.details.player_two)
         details = player_event.details
-        self.check_if_player_index_exist(player_event, details.player_one, details.player_one_card)
-        self.check_if_player_index_exist(player_event, details.player_two, details.player_two_card)
+        self.__check_if_player_index_exist(player_event, details.player_one, details.player_one_card)
+        self.__check_if_player_index_exist(player_event, details.player_two, details.player_two_card)
         self.game_data.rearrange_players_cards(
             details.player_one,
             details.player_one_card,
             details.player_two,
             details.player_two_card
         )
-        self.set_up_next_players_turn()
-        self.send_event_to_players(player_event)
+        self.__set_up_next_players_turn()
+        self.__send_event_to_players(player_event)
 
-    def perform_dutch(self, player_event: PlayerEvent):
+    def __perform_dutch(self, player_event: PlayerEvent):
         self.dutch = self.player_turn
-        self.remove_player_possible_move(self.players_order[self.player_turn].name, PlayerMove.DUTCH)
-        self.send_event_to_players(player_event)
+        self.__remove_player_possible_move(self.players_order[self.player_turn].name, PlayerMove.DUTCH)
+        self.__send_event_to_players(player_event)
 
-    def jump_in(self, player_event: PlayerEvent):
-        self.check_if_type_of_details_is_good(player_event, DetailsCardId)
+    def __jump_in(self, player_event: PlayerEvent):
+        check_if_type_of_details_is_good(player_event, DetailsCardId)
         card = self.game_data.check_players_card(player_event.player, player_event.details.card)
         card_on_stack = self.game_data.look_at_card_on_used_stack()
         if card.card_value == card_on_stack.card_value:
             self.game_data.remove_players_card(player_event.player, player_event.details.card)
-            self.put_card_on_used_stack(card)
-            self.send_event_to_players(player_event)
+            self.__put_card_on_used_stack(card)
+            self.__send_event_to_players(player_event)
             # TODO Check if player won
         else:
             self.game_data.add_player_card(player_event.player, self.game_data.take_card_from_stack())
-            self.send_event_to_players(player_event, jump_in_details=card)
+            self.__send_event_to_players(player_event, jump_in_details=card)
 
-    def take_card_from_stack(self, player_event: PlayerEvent):
+    def __take_card_from_stack(self, player_event: PlayerEvent):
         card = self.game_data.take_card_from_stack()
         self.card_selected = card
         player = self.players_order[self.player_turn]
         player.possible_moves = [PlayerMove.REPLACE_CARD_FROM_OWN_DECK, PlayerMove.PUT_CARD_ON_USED_STACK]
-        self.send_event_to_players(player_event, details_for_player=card)
+        self.__send_event_to_players(player_event, details_for_player=card)
 
-    def take_card_from_used_stack(self, player_event: PlayerEvent):
+    def __take_card_from_used_stack(self, player_event: PlayerEvent):
         card = self.game_data.take_card_from_used_stack()
         self.card_selected = card
         player = self.players[player_event.player]
         player.possible_moves = [PlayerMove.REPLACE_CARD_FROM_OWN_DECK]
-        self.send_event_to_players(player_event)
+        self.__send_event_to_players(player_event)
 
-    def put_card_on_used_stack(self, player_event: PlayerEvent, from_own_deck: bool = False):
+    def __put_card_on_used_stack(self, player_event: PlayerEvent, from_own_deck: bool = False):
         special_card = False
         if from_own_deck:
             if self.card_selected.card_rank == CardsRank.QUEEN:
@@ -240,47 +240,47 @@ class DutchGame:
         self.game_data.put_card_on_used_stack(self.card_selected)
         self.card_selected = None
         if not special_card:
-            self.set_up_next_players_turn()
-        self.send_event_to_players(player_event)
+            self.__set_up_next_players_turn()
+        self.__send_event_to_players(player_event)
 
-    def replace_card_from_own_deck(self, player_event: PlayerEvent):
-        self.check_if_type_of_details_is_good(player_event, DetailsCardId)
-        self.check_if_player_index_exist(player_event, player_event.player, player_event.details.card)
+    def __replace_card_from_own_deck(self, player_event: PlayerEvent):
+        check_if_type_of_details_is_good(player_event, DetailsCardId)
+        self.__check_if_player_index_exist(player_event, player_event.player, player_event.details.card)
         self.card_selected = self.game_data.replace_players_card(
             player_event.player,
             self.card_selected,
             player_event.details.card
         )
-        self.put_card_on_used_stack(player_event, True)
+        self.__put_card_on_used_stack(player_event, True)
 
-    def perform_player_event(self, player_event: PlayerEvent):
+    def __perform_player_event(self, player_event: PlayerEvent):
         match player_event.move:
             case PlayerMove.LOOK_AT_OWN_CARDS:
-                self.look_at_own_cards(player_event)
+                self.__look_at_own_cards(player_event)
             case PlayerMove.LOOK_AT_ANY_CARDS:
-                self.look_at_any_cards(player_event)
+                self.__look_at_any_cards(player_event)
             case PlayerMove.REARRANGE_PLACE_OF_CARDS:
-                self.rearrange_place_of_cards(player_event)
+                self.__rearrange_place_of_cards(player_event)
             case PlayerMove.DUTCH:
-                self.perform_dutch(player_event)
+                self.__perform_dutch(player_event)
             case PlayerMove.JUMP_IN:
-                self.jump_in(player_event)
+                self.__jump_in(player_event)
             case PlayerMove.TAKE_CARD_FROM_STACK:
-                self.take_card_from_stack(player_event)
+                self.__take_card_from_stack(player_event)
             case PlayerMove.TAKE_CARD_FROM_USED_STACK:
-                self.take_card_from_used_stack(player_event)
+                self.__take_card_from_used_stack(player_event)
             case PlayerMove.REPLACE_CARD_FROM_OWN_DECK:
-                self.replace_card_from_own_deck(player_event)
+                self.__replace_card_from_own_deck(player_event)
             case PlayerMove.PUT_CARD_ON_USED_STACK:
-                self.put_card_on_used_stack(player_event)
+                self.__put_card_on_used_stack(player_event)
 
     def player_input(self, player_event: PlayerEvent):
         with self.lock:
             player_name = player_event.player
             try:
-                self.check_if_player_exists(player_event, player_name)
+                self.__check_if_player_exists(player_event, player_name)
                 if player_event.move not in self.players[player_name].possible_moves:
                     raise IllegalMove(player_name, "player can't perform this move")
-                self.perform_player_event(player_event)
+                self.__perform_player_event(player_event)
             except IllegalMove as err:
-                self.send_event_to_players(player_event, status=Status.FAIL, message=str(err))
+                self.__send_event_to_players(player_event, status=Status.FAIL, message=str(err))

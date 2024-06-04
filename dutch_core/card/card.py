@@ -64,13 +64,17 @@ class Card:
     card_value = None
     card_value_sheet = None
 
-    def __init__(self, card_color: CardsColor, card_rank: CardsRank, card_value_sheet: {} = None):
+    def __init__(self, card_color: CardsColor, card_rank: CardsRank, card_value_sheet: {} = None, card_value = None):
         if card_value_sheet is None:
             card_value_sheet = DEFAULT_CARD_VALUES
         self.card_color = card_color
         self.card_rank = card_rank
         self.card_value_sheet = card_value_sheet
-        self.init_card_value()
+        if card_value is None:
+            self.init_card_value()
+        else:
+            self.card_value = card_value
+
 
     def init_card_value(self):
         values_for_card = self.card_value_sheet[self.card_rank]
@@ -85,6 +89,14 @@ class Card:
     def __str__(self):
         return str(self.card_color.value['icon']) + " " + self.card_rank.value + ", card value:" + str(self.card_value)
 
+    def to_dict(self):
+        data = {
+            "cardRank": self.card_rank.value,
+            "cardColor": self.card_color.value,
+            "cardValue": self.card_value
+        }
+        return data
+
 
 def create_card_deck(card_value_sheet: dict | None = None) -> list[Card]:
     deck = []
@@ -96,3 +108,11 @@ def create_card_deck(card_value_sheet: dict | None = None) -> list[Card]:
 
 def shuffle_cards(cards: list[Card]):
     random.shuffle(cards)
+
+def dict_to_card(card: dict):
+    if card is None:
+        return None
+    card_rank = CardsRank(card["cardRank"])
+    card_color = CardsColor(card["cardColor"])
+    card_value = card["cardValue"]
+    return Card(card_color, card_rank, card_value=card_value)

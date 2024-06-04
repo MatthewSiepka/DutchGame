@@ -31,7 +31,7 @@ class TestUI:
             case "rearrange_place_of_cards":
                 details = DetailsForRearranging(details_str[0], details_str[1], int(details_str[2]), int(details_str[3]))
                 player.request_event(PlayerMove.REARRANGE_PLACE_OF_CARDS, details)
-            case "dutch":
+            case "dutch_old":
                 player.request_event(PlayerMove.DUTCH, None)
             case "take_card_from_stack":
                 player.request_event(PlayerMove.TAKE_CARD_FROM_STACK, None)
