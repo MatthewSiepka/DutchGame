@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 
-from dutch_core.events import player_event
-from dutch_core.events.board import Board
 from dutch_core.events.player_event import DetailsForRearranging, DetailsOtherPlayerCard, PlayerEvent, DetailsCardId
 from dutch_core.events.player_event_response import PlayerEventResponse
+from dutch_core.game_change import GameChange
 from dutch_core.player_move import PlayerMove
 
 
@@ -11,6 +10,7 @@ class PlayerInterface(ABC):
     name: str
     last_game_event: PlayerEventResponse | None
     players: [str]
+    start_game_event: any
 
     def __init__(self, name):
         self.name = name
@@ -21,9 +21,14 @@ class PlayerInterface(ABC):
     def move(self, move: PlayerEvent):
         ...
 
+    def init_start_game_event(self, start_game_event):
+        self.start_game_event = start_game_event
+
     @abstractmethod
     def event_listener(self, data: PlayerEventResponse):
-        ...
+        self.last_game_event = data
+        if self.last_game_event.game_change == GameChange.CARDS_DEALT:
+            self.start_game_event()
 
     @abstractmethod
     def game_change_event_listener(self, players: list[str]):

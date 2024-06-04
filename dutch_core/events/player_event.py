@@ -56,6 +56,8 @@ def details_to_dict(details: None | DetailsCardId | DetailsOtherPlayerCard | Det
 
 
 def player_event_to_dict(player_event: PlayerEvent):
+    if player_event is None:
+        return None
     data = {
         "type": "PlayerEvent",
         "player": player_event.player,
@@ -82,6 +84,8 @@ def dict_to_details(details: dict):
 
 
 def dict_to_player_event(player_event: dict):
+    if player_event is None:
+        return None
     event = PlayerEvent(
         player_event["player"],
         PlayerMove(player_event["move"]),

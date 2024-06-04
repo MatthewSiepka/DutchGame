@@ -23,7 +23,6 @@ class HostPlayerInterface(PlayerInterface):
 
     def game_change_event_listener(self, players):
         self.players = players
-        self.update_ui()
         ...
 
     def start_game(self):

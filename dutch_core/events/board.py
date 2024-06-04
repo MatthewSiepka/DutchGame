@@ -1,9 +1,7 @@
-from dutch_core.card.card import Card
+from dutch_core.card.card import Card, dict_to_card
 from dataclasses import dataclass
 from dutch_core.events.player_info import PlayerInfo
 from dutch_core.player_move import PlayerMove
-
-
 
 
 @dataclass
@@ -13,6 +11,7 @@ class Board:
     player_cards: int
     player_turn: str | None
     moves_possible: list[PlayerMove]
+
 
 def dict_to_board(data: dict):
     if data is None:

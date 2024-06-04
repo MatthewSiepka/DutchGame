@@ -1,5 +1,6 @@
 import curses
 
+from dutch_core.card.card import Card, CardsColor, CardsRank
 from ui.gui_utility.add_center_text import add_center_text
 from ui.scene.scene_view import SceneView
 from ui.start_up.start_up_scene_model import StartUpSceneModel

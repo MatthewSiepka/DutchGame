@@ -59,9 +59,9 @@ DEFAULT_CARD_VALUES = {
 
 
 class Card:
-    card_rank = None
-    card_color = None
-    card_value = None
+    card_rank: CardsRank
+    card_color: CardsColor
+    card_value: int
     card_value_sheet = None
 
     def __init__(self, card_color: CardsColor, card_rank: CardsRank, card_value_sheet: {} = None, card_value = None):

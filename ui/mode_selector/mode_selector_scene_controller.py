@@ -1,5 +1,7 @@
 import curses
 
+from dutch.game_interface import GameInterface, GameInterfaceModes
+from dutch.host_player_interface import HostPlayerInterface
 from ui.mode_selector.mode_selector_scene_model import ModeSelectorSceneModel
 from ui.scene.scene_controller import SceneController
 
@@ -24,3 +26,7 @@ class ModeSelectorSceneController(SceneController):
         if key == 10:
             if self.model.active == 1:
                 self.change_scene_function("lan_connection", self.model.name)
+            if self.model.active == 0:
+                host = HostPlayerInterface(self.model.name)
+                game = GameInterface(host, GameInterfaceModes.LAN)
+                self.change_scene_function("waiting_room", host, game)

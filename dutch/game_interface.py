@@ -21,6 +21,7 @@ class GameInterface():
     mode: GameInterfaceModes
     server: Server | None
     game: DutchGame | None
+    test: str
 
     def __init__(self, host: HostPlayerInterface, mode: GameInterfaceModes):
         self.host = host
@@ -29,18 +30,23 @@ class GameInterface():
         self.inform_all_players_about_players_update()
         self.mode = mode
         self.game = None
+        self.server = None
+        self.test = ""
         self.set_up_server()
 
     def set_up_server(self):
-        if not self.mode == GameInterfaceModes.LAN:
+        if self.mode == GameInterfaceModes.LOCAL:
             return
         self.server = Server(self.lan_event_listener)
+        self.server.start()
 
     def lan_event_listener(self, conn: socket, addr, data):
+        self.test = data
         data = json.loads(data)
         if not data["event"] == "NewUser":
             conn.close()
         player = LanPlayerPropInterface(data["name"], conn, self.move)
+        self.players.append(player)
         self.server.bind_evnet_listener(addr, player.client_event_listener)
         self.inform_all_players_about_players_update()
 
@@ -51,7 +57,10 @@ class GameInterface():
         return players
 
     def inform_all_players_about_players_update(self):
-        self.host.game_change_event_listener(self.players_update())
+        new_player_list = self.players_update()
+        self.host.game_change_event_listener(new_player_list)
+        for player in self.players:
+            player.game_change_event_listener(new_player_list)
 
     def start_lan_game(self):
         self.game = DutchGame()

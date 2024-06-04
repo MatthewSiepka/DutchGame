@@ -43,9 +43,10 @@ class LanConnectionSceneController(SceneController):
         if key == 10:
             if len(self.model.port) > 0 and len(self.model.host) > 0:
                 try:
-                    LanPlayerInterface(self.model.name, self.model.host, int(self.model.port))
+                    player = LanPlayerInterface(self.model.name, self.model.host, int(self.model.port))
+                    self.change_scene_function("waiting_room", player)
                     self.model.error = ""
-                except socket.error:
-                    self.model.error = "Host not Found"
+                except socket.error as e:
+                    self.model.error = str(e)
 
                 # self.change_scene_function("mode_selector", self.model.name)
