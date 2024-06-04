@@ -59,7 +59,7 @@ def player_event_to_dict(player_event: PlayerEvent):
     if player_event is None:
         return None
     data = {
-        "type": "PlayerEvent",
+        "event": "PlayerEvent",
         "player": player_event.player,
         "move": player_event.move.value,
         "details": details_to_dict(player_event.details)

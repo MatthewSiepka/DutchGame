@@ -27,7 +27,7 @@ def translate_player_event_response_to_json(event: PlayerEventResponse):
     data = {
         "event": "GameEvent",
         "status": event.status.value,
-        "gameChange": event.game_change.value,
+        "gameChange": None if event.game_change is None else event.game_change.value,
         "playerEvent": player_event_to_dict(event.player_event),
         "detailsForPlayer": None if event.details_for_player is None else event.details_for_player.to_dict(),
         "changeOnBoard": board_to_json(event.change_on_board),

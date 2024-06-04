@@ -38,7 +38,7 @@ class Server:
             self.connections.append(conn)
             data = get_data_from_socket(conn)
             if addr in self.specific_event_listener:
-                self.specific_event_listener[addr](conn, addr, data)
+                self.specific_event_listener[addr](data)
             else:
                 self.event_listener(conn, addr, data)
 

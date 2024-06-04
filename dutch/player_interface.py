@@ -65,3 +65,6 @@ class PlayerInterface(ABC):
 
     def put_card_on_used_stack(self):
         self.__move(PlayerMove.PUT_CARD_ON_USED_STACK, None)
+
+    def dutch_game(self):
+        self.__move(PlayerMove.DUTCH, None)
