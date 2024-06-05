@@ -36,8 +36,8 @@ class GUIController:
         while not self.quit:
             self.stdscr.clear()
             active_scene = self.scenes[self.active_scene]
-            dementions = self.stdscr.getmaxyx()
-            self.stdscr.addstr(dementions[0] - 1, 0, "press ^X to exit")
+            dimensions = self.stdscr.getmaxyx()
+            self.stdscr.addstr(dimensions[0] - 1, 0, "press two times ^C to exit")
             active_scene.render()
             key = self.stdscr.getch()
             if key == 24:

@@ -38,7 +38,7 @@ class WaitingRoomSceneView(SceneView):
         for i, player in enumerate(self.model.player_interface.players):
             add_center_text(
                 self.stdscr,
-                player + str(i),
+                player,
                 (height // 2) - ((-i * 2) + 2),
                 curses.A_BOLD | curses.COLOR_WHITE
             )

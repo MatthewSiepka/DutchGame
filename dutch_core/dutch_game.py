@@ -36,6 +36,7 @@ class DutchGame:
     players_order: list[Player] = []
     player_turn: None | int = None
     dutch: int | None = None
+    dutch_in_last_round: bool = False
     options: DutchOptions
     game_data: DutchGameData
     player_won: None | str = None
@@ -43,6 +44,7 @@ class DutchGame:
     lock = threading.Lock()
 
     def __init__(self, options=None):
+        self.player_won = None
         if options is None:
             options = DEFAULT_OPTIONS
         self.options = options
@@ -110,7 +112,7 @@ class DutchGame:
             status: Status = Status.SUCCESS,
             details_for_player: None | Card = None,
             jump_in_details: None | Card = None,
-            message: None | str = None
+            message: None | str = None,
     ):
         # print(details_for_player)
         if status == Status.FAIL:
@@ -120,7 +122,7 @@ class DutchGame:
             return
         player_board = self.__get_boards_for_players()
         for index, player in enumerate(self.players_order):
-            change_on_board = player_board[index]
+            change_on_board = player_board[index] if self.player_won is None else None
             details = details_for_player if player_event is None or player.name == player_event.player else None
             response = PlayerEventResponse(
                 status,
@@ -152,10 +154,29 @@ class DutchGame:
 
         self.__send_event_to_players(player_event, details_for_player=card)
 
+    def __find_player_with_lowest_value(self):
+        lowest_value = None
+        lowest_player = None
+        for k, v in self.game_data.players_cards.items():
+            value = 0
+            for card in v:
+                value += card.card_value
+            if lowest_value is None:
+                lowest_player = k
+                lowest_value = value
+            else:
+                if lowest_value > value:
+                    lowest_value = value
+                    lowest_player = k
+        return lowest_player
+
     def __set_up_next_players_turn(self):
         self.__next_player_turn()
-        # if self.dutch_old is not None and self.dutch_old == self.player_turn:
-        #     self.send_event_to_players(None, GameChange.END_OF_GAME, Status.SUCCESS, )
+        if self.dutch_in_last_round and self.dutch is not None and self.dutch == self.player_turn:
+            self.player_won = self.__find_player_with_lowest_value()
+            self.__send_event_to_players(None, GameChange.END_OF_GAME, Status.SUCCESS)
+        if not self.dutch_in_last_round and self.dutch is None:
+            self.dutch_in_last_round = True
         # TODO Check If is End OF Game by dutching
         for index, player in enumerate(self.players_order):
             if index == self.player_turn:
@@ -205,11 +226,15 @@ class DutchGame:
         check_if_type_of_details_is_good(player_event, DetailsCardId)
         card = self.game_data.check_players_card(player_event.player, player_event.details.card)
         card_on_stack = self.game_data.look_at_card_on_used_stack()
-        if card.card_value == card_on_stack.card_value:
+        if card.card_rank == card_on_stack.card_rank:
             self.game_data.remove_players_card(player_event.player, player_event.details.card)
-            self.__put_card_on_used_stack(card)
-            self.__send_event_to_players(player_event)
+            self.game_data.put_card_on_used_stack(card)
             # TODO Check if player won
+            if self.game_data.get_players_card_count(player_event.player) == 0:
+                self.__send_event_to_players(player_event, GameChange.END_OF_GAME, Status.SUCCESS)
+                self.player_won = player_event.player
+            else:
+                self.__send_event_to_players(player_event, jump_in_details=None)
         else:
             self.game_data.add_player_card(player_event.player, self.game_data.take_card_from_stack())
             self.__send_event_to_players(player_event, jump_in_details=card)

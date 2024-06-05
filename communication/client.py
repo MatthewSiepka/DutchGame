@@ -1,3 +1,4 @@
+import sys
 import threading
 from concurrent.futures import thread
 import socket
@@ -29,5 +30,6 @@ class Client:
         self.data_thread.start()
 
     def send_message_to_server(self, data):
+        print(data, file=sys.stderr)
         send_data(self.sock, data)
 

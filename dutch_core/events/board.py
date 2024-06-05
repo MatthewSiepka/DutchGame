@@ -28,7 +28,7 @@ def board_to_json(board: Board):
     if board is None:
         return None
     data = {
-        "cardOnUsedStack": board.card_on_used_stack.to_dict(),
+        "cardOnUsedStack": board.card_on_used_stack.to_dict() if board.card_on_used_stack is not None else None,
         "players": [{"player": player_info.player, "cards": player_info.cards} for player_info in board.players],
         "playerCards": board.player_cards,
         "playerTurn": board.player_turn,
