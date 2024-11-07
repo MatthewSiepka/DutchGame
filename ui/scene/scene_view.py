@@ -1,10 +1,6 @@
 import curses
 from abc import abstractmethod, ABC
 
-<<<<<<< Updated upstream
-from ui.scene.scene_model import SceneModel
-=======
->>>>>>> Stashed changes
 
 
 class SceneView(ABC):

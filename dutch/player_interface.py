@@ -43,11 +43,7 @@ class PlayerInterface(ABC):
         self.__move(PlayerMove.LOOK_AT_OWN_CARDS, DetailsCardId(card))
 
     def look_at_cards(self, player: str, card: int):
-<<<<<<< Updated upstream
-        self.__move(PlayerMove.LOOK_AT_OWN_CARDS, DetailsOtherPlayerCard(card, player))
-=======
         self.__move(PlayerMove.LOOK_AT_ANY_CARDS, DetailsOtherPlayerCard(card, player))
->>>>>>> Stashed changes
 
     def rearrange_place_of_cards(self, player_one: str, player_one_card: int, player_two: str, player_two_card: int):
         self.__move(

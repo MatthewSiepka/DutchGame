@@ -117,12 +117,9 @@ class GameSceneController(SceneController):
                         if self.model.player_selected == 0 \
                         else board.players[self.model.player_selected - 1].player
                     self.model.player_interface.look_at_cards(player, self.model.player_cards_selected)
-<<<<<<< Updated upstream
-=======
                     self.model.player_cards_selected = 0
                     self.model.player_selected = 0
                     self.go_back_to_actions()
->>>>>>> Stashed changes
                 if board.moves_possible[self.model.actions_selected] == PlayerMove.REARRANGE_PLACE_OF_CARDS:
                     if self.model.all_cards_selected is None:
                         self.model.all_cards_selected = [self.model.player_selected, self.model.player_cards_selected]

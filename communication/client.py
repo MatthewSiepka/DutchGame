@@ -23,10 +23,7 @@ class Client:
     def server_data_handler(self):
         while True:
             data = get_data_from_socket(self.sock)
-<<<<<<< Updated upstream
-=======
             print(data, file=sys.stderr)
->>>>>>> Stashed changes
             self.event_handler(data)
 
     def start_data_handler(self):

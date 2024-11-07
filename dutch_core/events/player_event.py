@@ -74,11 +74,7 @@ def dict_to_details(details: dict):
         return DetailsCardId(details["card"])
     if details["type"] == "detailsOtherPlayerCard":
         return DetailsOtherPlayerCard(details["card"], details["player"])
-<<<<<<< Updated upstream
-    if details["type"] == "DetailsForRearranging":
-=======
     if details["type"] == "detailsForRearranging":
->>>>>>> Stashed changes
         return DetailsForRearranging(
             details["playerOne"],
             details["playerTwo"],

@@ -1,51 +1,27 @@
-<<<<<<< Updated upstream
-=======
 import random
 
->>>>>>> Stashed changes
 from dutch.player_interface import PlayerInterface
 from dutch_core.card.card import Card
 from dutch_core.events.player_event import PlayerEvent
 from dutch_core.events.player_event_response import PlayerEventResponse
-<<<<<<< Updated upstream
-
-
-class HostPlayerInterface(PlayerInterface):
-=======
 from dutch_core.player_move import PlayerMove
 
 
 class AIPlayerInterface(PlayerInterface):
->>>>>>> Stashed changes
     event_handler: any
     start_game_handler: any
     own_cards: list[Card | None]
 
-<<<<<<< Updated upstream
-    def __init__(self, name):
-        super().__init__(name)
-
-    def bind_game_interface(self, event_handler, start_game_handler):
-=======
     def __init__(self):
         super().__init__("Jeffrey Bezos AI")
         self.own_cards = [None, None, None, None]
 
     def bind_game_interface(self, event_handler):
->>>>>>> Stashed changes
         self.event_handler = event_handler
 
     def move(self, move: PlayerEvent):
         self.event_handler(move)
 
-<<<<<<< Updated upstream
-    def event_listener(self, data: PlayerEventResponse):
-        super().event_listener(data)
-
-    def game_change_event_listener(self, players):
-        self.players = players
-
-=======
     def ai_get_card_that_is_none(self):
         for i in range(len(self.own_cards)):
             if i is not None:
@@ -121,4 +97,3 @@ class AIPlayerInterface(PlayerInterface):
 
     def game_change_event_listener(self, players):
         self.players = players
->>>>>>> Stashed changes

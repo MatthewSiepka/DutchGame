@@ -305,11 +305,7 @@ class DutchGame:
             try:
                 self.__check_if_player_exists(player_event, player_name)
                 if player_event.move not in self.players[player_name].possible_moves:
-<<<<<<< Updated upstream
-                    raise IllegalMove(player_name, "player can't perform this move")
-=======
                     raise IllegalMove(player_name, f"player can't perform this move: {player_event.move.value}")
->>>>>>> Stashed changes
                 self.__perform_player_event(player_event)
             except IllegalMove as err:
                 self.__send_event_to_players(player_event, status=Status.FAIL, message=str(err))

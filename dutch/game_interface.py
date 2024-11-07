@@ -56,12 +56,9 @@ class GameInterface():
             players.append(player.name)
         return players
 
-<<<<<<< Updated upstream
-=======
     def players_add_player(self, player: PlayerInterface):
         self.players.append(player)
 
->>>>>>> Stashed changes
     def inform_all_players_about_players_update(self):
         new_player_list = self.players_update()
         self.host.game_change_event_listener(new_player_list)

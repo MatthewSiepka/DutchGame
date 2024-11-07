@@ -25,8 +25,4 @@ class ModeSelectorSceneView(SceneView):
         add_center_text(self.stdscr, f"Chose game mode", height // 2 - 6, self.WHITE_COLOR)
         add_center_text(self.stdscr, "Host Lan Game", height // 2 - 2, self.is_active(0))
         add_center_text(self.stdscr, "Join Lan Game", height // 2, self.is_active(1))
-<<<<<<< Updated upstream
-        add_center_text(self.stdscr, "Play Vs AI", height // 2 + 2, self.is_active(2))
-=======
         # add_center_text(self.stdscr, "Play Vs AI", height // 2 + 2, self.is_active(2))
->>>>>>> Stashed changes

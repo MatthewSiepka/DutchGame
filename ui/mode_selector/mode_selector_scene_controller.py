@@ -1,9 +1,6 @@
 import curses
 
-<<<<<<< Updated upstream
-=======
 from dutch.ai_player_interface import AIPlayerInterface
->>>>>>> Stashed changes
 from dutch.game_interface import GameInterface, GameInterfaceModes
 from dutch.host_player_interface import HostPlayerInterface
 from ui.mode_selector.mode_selector_scene_model import ModeSelectorSceneModel
@@ -23,11 +20,7 @@ class ModeSelectorSceneController(SceneController):
         pass
 
     def key_input(self, key):
-<<<<<<< Updated upstream
-        if key == curses.KEY_DOWN and not self.model.active == 2:
-=======
         if key == curses.KEY_DOWN and not self.model.active == 1:
->>>>>>> Stashed changes
             self.model.active += 1
         if key == curses.KEY_UP and not self.model.active == 0:
             self.model.active -= 1
@@ -38,8 +31,6 @@ class ModeSelectorSceneController(SceneController):
                 host = HostPlayerInterface(self.model.name)
                 game = GameInterface(host, GameInterfaceModes.LAN)
                 self.change_scene_function("waiting_room", host, game)
-<<<<<<< Updated upstream
-=======
             # if self.model.active == 2:
             #     host = HostPlayerInterface(self.model.name)
             #     ai = AIPlayerInterface()
@@ -48,4 +39,3 @@ class ModeSelectorSceneController(SceneController):
             #     game.start_lan_game()
             #     self.change_scene_function("game", game)
 
->>>>>>> Stashed changes
