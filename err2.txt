@@ -1,11 +1,4 @@
-Traceback (most recent call last):
-  File "/Users/matthewsiepka/Programming/python/DutchGame/main.py", line 18, in <module>
-    from ui.user_interface import ui
-  File "/Users/matthewsiepka/Programming/python/DutchGame/ui/user_interface.py", line 4, in <module>
-    from ui.scene.gui_controller import GUIController
-  File "/Users/matthewsiepka/Programming/python/DutchGame/ui/scene/gui_controller.py", line 5, in <module>
-    from ui.gui_utility.color_scheme import init_color_scheme
-  File "/Users/matthewsiepka/Programming/python/DutchGame/ui/gui_utility/color_scheme.py", line 4, in <module>
-    "cyan_black": curses.color_pair(1),
-                  ^^^^^^^^^^^^^^^^^^^^
-_curses.error: must call initscr() first
+{"event": "NewUser", "name": "user2"}
+{"event": "PlayerUpdate", "players": ["user1", "user2"]}
+{"event": "GameEvent", "status": "Success", "gameChange": "card_dealt", "playerEvent": null, "detailsForPlayer": null, "changeOnBoard": {"cardOnUsedStack": {"cardRank": "7", "cardColor": {"name": "hearts", "color": "red", "icon": "\u2665\ufe0e"}, "cardValue": 7}, "players": [{"player": "user1", "cards": 4}], "playerCards": 4, "playerTurn": null, "moves_possible": ["lookAtOwnCards", "lookAtOwnCards"]}, "jumpInDetails": null, "playerWon": null, "message": null}
+{"event": "GameEvent", "status": "Success", "gameChange": null, "playerEvent": {"event": "PlayerEvent", "player": "user1", "move": "lookAtOwnCards", "details": {"type": "detailsCardId", "card": 1}}, "detailsForPlayer": null, "changeOnBoard": {"cardOnUsedStack": {"cardRank": "7", "cardColor": {"name": "hearts", "color": "red", "icon": "\u2665\ufe0e"}, "cardValue": 7}, "players": [{"player": "user1", "cards": 4}], "playerCards": 4, "playerTurn": null, "moves_possible": ["lookAtOwnCards", "lookAtOwnCards"]}, "jumpInDetails": null, "playerWon": null, "message": null}

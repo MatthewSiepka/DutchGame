@@ -31,7 +31,7 @@ class WaitingRoomSceneView(SceneView):
 
         add_center_text(
             self.stdscr,
-            "Waiting For Players:",
+            "Players in lobby:",
             height // 2 - 4,
             curses.A_BOLD | curses.COLOR_WHITE
         )

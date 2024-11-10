@@ -17,36 +17,34 @@ class LanConnectionSceneController(SceneController):
         pass
 
     def key_input(self, key):
-        if (
-                self.model.active == 0 and (
-                (ord("0") <= key <= ord("9")) or
-                (ord("a") <= key <= ord("z")) or
-                (ord("A") <= key <= ord("a")) or
-                (key == ord(".")))
-        ):
-            self.model.host += chr(key)
 
-        if ord("0") <= key <= ord("9") and self.model.active == 1:
-            self.model.port += chr(key)
-
-        if key == 127 and len(self.model.host) > 0:
-            if self.model.active == 0:
-                self.model.host = self.model.host[:-1]
-            if self.model.active == 1:
-                self.model.port = self.model.port[:-1]
+        self.model.host_input.input_key(key)
+        self.model.port_input.input_key(key)
 
         if key == curses.KEY_DOWN and not self.model.active == 1:
             self.model.active += 1
+            self.set_active()
+            return
         if key == curses.KEY_UP and not self.model.active == 0:
             self.model.active -= 1
+            self.set_active()
+            return
 
         if key == 10:
-            if len(self.model.port) > 0 and len(self.model.host) > 0:
+            host = self.model.host_input.text
+            port = self.model.port_input.text
+
+            if len(host) > 0 and len(port) > 0:
                 try:
-                    player = LanPlayerInterface(self.model.name, self.model.host, int(self.model.port))
+                    player = LanPlayerInterface(self.model.name, host, int(port))
                     self.change_scene_function("waiting_room", player)
                     self.model.error = ""
                 except socket.error as e:
                     self.model.error = str(e)
-
+            else:
+                self.model.error = "Host and port inputs can't be empty!"
                 # self.change_scene_function("mode_selector", self.model.name)
+
+    def set_active(self):
+        self.model.host_input.set_active(self.model.active == 0)
+        self.model.port_input.set_active(self.model.active == 1)

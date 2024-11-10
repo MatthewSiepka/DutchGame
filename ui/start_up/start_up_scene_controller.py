@@ -19,3 +19,5 @@ class StartUpSceneController(SceneController):
         if key == 10:
             if len(self.model.get_name()) > 0:
                 self.change_scene_function("mode_selector", self.model.get_name())
+            else:
+                self.model.error_message = "Name needs to be at least one character long!"
