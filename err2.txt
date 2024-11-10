@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/matthewsiepka/Programming/python/DutchGame/main.py", line 18, in <module>
+    from ui.user_interface import ui
+  File "/Users/matthewsiepka/Programming/python/DutchGame/ui/user_interface.py", line 4, in <module>
+    from ui.scene.gui_controller import GUIController
+  File "/Users/matthewsiepka/Programming/python/DutchGame/ui/scene/gui_controller.py", line 5, in <module>
+    from ui.gui_utility.color_scheme import init_color_scheme
+  File "/Users/matthewsiepka/Programming/python/DutchGame/ui/gui_utility/color_scheme.py", line 4, in <module>
+    "cyan_black": curses.color_pair(1),
+                  ^^^^^^^^^^^^^^^^^^^^
+_curses.error: must call initscr() first

@@ -14,17 +14,8 @@ class StartUpSceneController(SceneController):
         pass
 
     def key_input(self, key):
-        if (
-                key == ord(" ") or
-                (ord("0") <= key <= ord("9")) or
-                (ord("a") <= key <= ord("z")) or
-                (ord("A") <= key <= ord("a"))
-        ):
-            self.model.name += chr(key)
-
-        if key == 127 and len(self.model.name) > 0:
-            self.model.name = self.model.name[:-1]
+        self.model.name_input.input_key(key)
 
         if key == 10:
-            if len(self.model.name) > 0:
-                self.change_scene_function("mode_selector", self.model.name)
+            if len(self.model.get_name()) > 0:
+                self.change_scene_function("mode_selector", self.model.get_name())

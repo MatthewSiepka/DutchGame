@@ -128,7 +128,6 @@ class GameSceneView(SceneView):
                 message += f" putted card on used stack"
         add_center_text(self.stdscr, message, height, curses.color_pair(3))
 
-
     def render_moves_possible(self, height):
         y_and_x = self.stdscr.getmaxyx()
         board = self.model.player_interface.last_game_event.change_on_board
