@@ -34,8 +34,8 @@ class ModeSelectorSceneController(SceneController):
             # if self.model.active == 2:
             #     host = HostPlayerInterface(self.model.name)
             #     ai = AIPlayerInterface()
-            #     game = GameInterface(host, GameInterfaceModes.LOCAL)
-            #     game.players_add_player(ai)
-            #     game.start_lan_game()
-            #     self.change_scene_function("game", game)
+            #     game_old = GameInterface(host, GameInterfaceModes.LOCAL)
+            #     game_old.players_add_player(ai)
+            #     game_old.start_lan_game()
+            #     self.change_scene_function("game_old", game_old)
 

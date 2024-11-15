@@ -25,7 +25,7 @@ class ModeSelectorSceneView(SceneView):
         add_center_text(self.stdscr, "Dutch Game", center_height - 10, curses.A_BOLD | curses_colors["white_black"])
         add_center_text(self.stdscr, f"Hello {self.model.name}!",center_height - 8, curses.A_BOLD | curses_colors["white_black"])
         rectangle(self.stdscr, height // 2 - 6, width // 2 - 20,center_height + 6, width // 2 + 20)
-        add_center_text(self.stdscr, f"Chose game mode", center_height - 6, curses_colors["cyan_black"])
+        add_center_text(self.stdscr, f"Chose game_old mode", center_height - 6, curses_colors["cyan_black"])
         add_center_text(self.stdscr, "Host Lan Game", center_height - 2, self.is_active(0))
         add_center_text(self.stdscr, "Join Lan Game", center_height, self.is_active(1))
         # add_center_text(self.stdscr, "Play Vs AI", height // 2 + 2, self.is_active(2))

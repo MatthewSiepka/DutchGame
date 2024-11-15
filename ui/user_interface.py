@@ -1,4 +1,4 @@
-from ui.game.game_scene import GameScene
+from ui.game_old.game_scene import GameScene
 from ui.lan_connection.lan_connection_scene import LanConnectionScene
 from ui.mode_selector.mode_selector_scene import ModeSelectorScene
 from ui.scene.gui_controller import GUIController

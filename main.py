@@ -2,13 +2,13 @@
 # from dutch_core.dutch_game import DutchGame
 # from test_interface.test_ui import TestUI
 #
-# game = DutchGame()
-# player_one = PlayerInterface("test1", game)
-# player_two = PlayerInterface("test2", game)
+# game_old = DutchGame()
+# player_one = PlayerInterface("test1", game_old)
+# player_two = PlayerInterface("test2", game_old)
 # players = [player_one, player_two]
 #
-# ui = TestUI(game, players)
-# game.start_game()
+# ui = TestUI(game_old, players)
+# game_old.start_game()
 #
 # while(True):
 #     userInput = input("PlayerName;Move;Details")
@@ -18,6 +18,9 @@ from curses import wrapper
 from ui.user_interface import ui
 
 # from ui import user_interface
+import locale
+locale.setlocale(locale.LC_ALL, '')
+
 
 wrapper(ui)
 # UIMode("test")

@@ -39,10 +39,14 @@ class GUIController:
             dimensions = self.stdscr.getmaxyx()
             self.stdscr.addstr(dimensions[0] - 1, 0, "press two times ^C to exit")
             active_scene.render()
+            time.sleep(1 / 60)
             key = self.stdscr.getch()
+
             if key == 24:
                 self.quit = True
             active_scene.scene_controller.key_input(key)
-            time.sleep(1/30)
+
+
+
 
 

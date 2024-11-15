@@ -23,5 +23,4 @@ class StartUpSceneView(SceneView):
         add_center_text(self.stdscr, "Insert your Name:", height // 2 - 4, curses.A_BOLD | curses_colors["white_black"])
         self.model.name_input.render(height // 2 - 2)
         add_center_text(self.stdscr, self.model.error_message, height // 2, curses.A_BOLD | curses_colors["red_black"])
-
         add_center_text(self.stdscr, "Press \"ENTER\" to Continue", height // 2 + 2, curses.A_BOLD | curses_colors["white_black"])

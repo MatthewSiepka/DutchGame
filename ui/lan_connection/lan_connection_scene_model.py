@@ -4,8 +4,6 @@ from ui.scene.scene_model import SceneModel
 
 class LanConnectionSceneModel(SceneModel):
     name: str
-    host: str
-    port: str
     active: int
     error: str
     host_input: Input
@@ -13,8 +11,6 @@ class LanConnectionSceneModel(SceneModel):
 
     def __init__(self):
         self.name = ""
-        self.host = ""
-        self.port = ""
         self.active = 0
         self.error = ""
 

@@ -14,7 +14,7 @@ class WaitingRoomSceneController(SceneController):
         pass
 
     def start_game_event(self):
-        self.change_scene_function("game", self.model.player_interface)
+        self.change_scene_function("game_old", self.model.player_interface)
 
     def key_input(self, key):
         if key == 10:
